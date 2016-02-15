@@ -31,16 +31,24 @@ class MenuItemView: UIView {
     
     var titleLabel : UILabel?
     var menuItemSeparator : UIView?
+    var menuItemBadge : UIView?
     
     func setUpMenuItemView(menuItemWidth: CGFloat, menuScrollViewHeight: CGFloat, indicatorHeight: CGFloat, separatorPercentageHeight: CGFloat, separatorWidth: CGFloat, separatorRoundEdges: Bool, menuItemSeparatorColor: UIColor) {
         titleLabel = UILabel(frame: CGRectMake(0.0, 0.0, menuItemWidth, menuScrollViewHeight - indicatorHeight))
         
         menuItemSeparator = UIView(frame: CGRectMake(menuItemWidth - (separatorWidth / 2), floor(menuScrollViewHeight * ((1.0 - separatorPercentageHeight) / 2.0)), separatorWidth, floor(menuScrollViewHeight * separatorPercentageHeight)))
         menuItemSeparator!.backgroundColor = menuItemSeparatorColor
-        
         if separatorRoundEdges {
             menuItemSeparator!.layer.cornerRadius = menuItemSeparator!.frame.width / 2
         }
+        
+        let badgeSize = CGFloat(4)
+        menuItemBadge = UIView(frame: CGRectMake(menuItemWidth - badgeSize*3, badgeSize*2, badgeSize, badgeSize))
+        menuItemBadge!.backgroundColor = menuItemSeparatorColor
+        menuItemBadge!.layer.cornerRadius = badgeSize/2
+        
+        menuItemBadge!.hidden = true
+        self.addSubview(menuItemBadge!)
         
         menuItemSeparator!.hidden = true
         self.addSubview(menuItemSeparator!)
@@ -73,6 +81,7 @@ public enum CAPSPageMenuOption {
     case UseMenuLikeSegmentedControl(Bool)
     case MenuItemSeparatorRoundEdges(Bool)
     case MenuItemFont(UIFont)
+    case SelectedMenuItemFont(UIFont)
     case MenuItemSeparatorPercentageHeight(CGFloat)
     case MenuItemWidth(CGFloat)
     case EnableHorizontalBounce(Bool)
@@ -105,7 +114,7 @@ public class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureReco
     
     var selectionIndicatorView : UIView = UIView()
     
-    var currentPageIndex : Int = 0
+    public var currentPageIndex : Int = 0
     var lastPageIndex : Int = 0
     
     public var selectionIndicatorColor : UIColor = UIColor.whiteColor()
@@ -117,6 +126,7 @@ public class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureReco
     public var menuItemSeparatorColor : UIColor = UIColor.lightGrayColor()
     
     public var menuItemFont : UIFont = UIFont.systemFontOfSize(15.0)
+    public var selectedMenuItemFont : UIFont = UIFont.boldSystemFontOfSize(15.0)
     public var menuItemSeparatorPercentageHeight : CGFloat = 0.2
     public var menuItemSeparatorWidth : CGFloat = 0.5
     public var menuItemSeparatorRoundEdges : Bool = false
@@ -205,6 +215,8 @@ public class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureReco
                     menuItemSeparatorRoundEdges = value
                 case let .MenuItemFont(value):
                     menuItemFont = value
+                case let .SelectedMenuItemFont(value):
+                    selectedMenuItemFont = value
                 case let .MenuItemSeparatorPercentageHeight(value):
                     menuItemSeparatorPercentageHeight = value
                 case let .MenuItemWidth(value):
@@ -242,16 +254,16 @@ public class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureReco
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-	
-	// MARK: - Container View Controller
-	public override func shouldAutomaticallyForwardAppearanceMethods() -> Bool {
-		return true
-	}
-	
-	public override func shouldAutomaticallyForwardRotationMethods() -> Bool {
-		return true
-	}
-	
+    
+    // MARK: - Container View Controller
+    public override func shouldAutomaticallyForwardAppearanceMethods() -> Bool {
+        return true
+    }
+    
+    public override func shouldAutomaticallyForwardRotationMethods() -> Bool {
+        return true
+    }
+    
     // MARK: - UI Setup
     
     func setUpUserInterface() {
@@ -446,6 +458,7 @@ public class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureReco
         // Set selected color for title label of selected menu item
         if menuItems.count > 0 {
             if menuItems[currentPageIndex].titleLabel != nil {
+                menuItems[currentPageIndex].titleLabel!.font      = selectedMenuItemFont
                 menuItems[currentPageIndex].titleLabel!.textColor = selectedMenuItemLabelColor
             }
         }
@@ -737,6 +750,8 @@ public class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureReco
                     if self.menuItems[self.lastPageIndex].titleLabel != nil && self.menuItems[self.currentPageIndex].titleLabel != nil {
                         self.menuItems[self.lastPageIndex].titleLabel!.textColor = self.unselectedMenuItemLabelColor
                         self.menuItems[self.currentPageIndex].titleLabel!.textColor = self.selectedMenuItemLabelColor
+                        self.menuItems[self.lastPageIndex].titleLabel!.font = self.menuItemFont
+                        self.menuItems[self.currentPageIndex].titleLabel!.font = self.selectedMenuItemFont
                     }
                 }
             })
@@ -1006,4 +1021,11 @@ public class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureReco
             })
         }
     }
+    
+    // MARK: - badge control
+    
+    public func badgeStatus(index: Int, status: Bool) {
+        menuItems[index].menuItemBadge?.hidden = !status
+    }
 }
+
