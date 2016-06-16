@@ -42,7 +42,7 @@ class MenuItemView: UIView {
             menuItemSeparator!.layer.cornerRadius = menuItemSeparator!.frame.width / 2
         }
         
-        menuItemBadge = UIView(frame: CGRectMake(menuItemWidth - badgeSize*2.5, badgeSize*1, badgeSize, badgeSize))
+        menuItemBadge = UIView(frame: CGRectMake(menuItemWidth - badgeSize*2, badgeSize*2, badgeSize, badgeSize))
         menuItemBadge!.backgroundColor = menuItemSeparatorColor
         menuItemBadge!.layer.cornerRadius = badgeSize/2
         
@@ -138,7 +138,7 @@ public class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureReco
     public var centerMenuItems : Bool = false
     public var enableHorizontalBounce : Bool = true
     public var hideTopMenuBar : Bool = false
-    public var badgeSize : CGFloat = 6
+    public var badgeSize : CGFloat = 4
     
     var currentOrientationIsPortrait : Bool = true
     var pageIndexForOrientationChange : Int = 0
