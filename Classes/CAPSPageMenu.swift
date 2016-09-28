@@ -42,7 +42,8 @@ class MenuItemView: UIView {
             menuItemSeparator!.layer.cornerRadius = menuItemSeparator!.frame.width / 2
         }
         
-        menuItemBadge = UIView(frame: CGRectMake(menuItemWidth - badgeSize*2, badgeSize*2, badgeSize, badgeSize))
+        let badgeMargin = CGFloat(8)
+        menuItemBadge = UIView(frame: CGRectMake(menuItemWidth - badgeMargin, badgeMargin, badgeSize, badgeSize))
         menuItemBadge!.backgroundColor = menuItemSeparatorColor
         menuItemBadge!.layer.cornerRadius = badgeSize/2
         
@@ -90,6 +91,7 @@ public enum CAPSPageMenuOption {
     case ScrollAnimationDurationOnMenuItemTap(Int)
     case CenterMenuItems(Bool)
     case HideTopMenuBar(Bool)
+    case BadgeSize(CGFloat)
 }
 
 public class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
@@ -138,7 +140,7 @@ public class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureReco
     public var centerMenuItems : Bool = false
     public var enableHorizontalBounce : Bool = true
     public var hideTopMenuBar : Bool = false
-    public var badgeSize : CGFloat = 4
+    public var badgeSize : CGFloat = 8
     
     var currentOrientationIsPortrait : Bool = true
     var pageIndexForOrientationChange : Int = 0
@@ -236,6 +238,8 @@ public class CAPSPageMenu: UIViewController, UIScrollViewDelegate, UIGestureReco
                     centerMenuItems = value
                 case let .HideTopMenuBar(value):
                     hideTopMenuBar = value
+                case let .BadgeSize(value):
+                    badgeSize = value
                 }
             }
             
